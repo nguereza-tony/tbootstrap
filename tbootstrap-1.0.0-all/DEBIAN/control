@@ -1,0 +1,11 @@
+Package: tbootstrap
+Version: 1.0.0
+Section: main
+Priority: optional
+Architecture: all
+Depends: bash (>= 4), zip
+Maintainer: Tony NGUEREZA <nguerezatony@gmail.com>
+Homepage : http://www.nguereza-tony.cf
+Description: Bootstrap web generator
+ Script shell de génération d'une squelette d'un projet web utilisant le
+ framework css bootstrap de twitter version 3 et plus.

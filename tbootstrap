@@ -1,0 +1,384 @@
+#!/bin/bash
+clear
+
+#variables
+APP_BIN='tbootstrap'
+APP_NAME='tbootstrap'
+APP_VERSION='1.0.0'
+APP_AUTHOR='Tony NGUEREZA <nguerezatony@gmail.com>'
+APP_BUILD_DATE='19/02/2017'
+APP_WEB_SITE='http://www.nguereza-tony.cf'
+BOOTSTRAP_ZIP=$(ls /usr/share/$APP_NAME/bootstrap-[0-9].[0-9].[0-9].zip 2> /dev/null)
+FILE=$BOOTSTRAP_ZIP
+WWW='htdocs'
+HEADER='header.php'
+FOOTER='footer.php'
+CSS_PATH='css'
+JS_PATH='js'
+BOOTSTRAP_PATH='bootstrap'
+TEMPDIR="/tmp/${APP_NAME}"
+
+usage(){
+cat<<USAGE
+$APP_NAME
+Script shell de génération d'une squelette d'un projet web utilisant le
+framework css bootstrap de twitter version 3 et plus.
+
+Version : $APP_VERSION
+Auteur  : $APP_AUTHOR
+Date    : $APP_BUILD_DATE
+
+Usage : ${APP_BIN} [OPTIONS] [ARGS]
+
+les Options sont :
+	-d, --dir  :    pour specifier le chemin vers le repertoire de
+	                destination où les fichiers seront copiés.
+	                Par defaut c'est le repertoire [$WWW]
+	-f, --file :    pour specifier le chemin vers le fichier compressé de
+	                bootstrap au format zip.
+	                Par défaut c'est le fichier [$BOOTSTRAP_ZIP]
+	-h, --help :    pour afficher cette aide
+	-v, --version : pour afficher la version
+	--header      : pour specifier le nom du fichier de l'entete de page.
+			Par défaut c'est le fichier [$HEADER]
+	--footer      : pour specifier le nom du fichier de pied de page.
+			Par défaut c'est le fichier [$FOOTER]
+	--css-path	: chemin des fichiers styles CSS
+			Par défaut c'est [$CSS_PATH]
+	--js-path	: chemin des fichiers javascripts
+			Par défaut c'est [$JS_PATH]
+	--bootstrap-path : chemin des fichiers css, fonts, js de bootstrap
+			Par défaut c'est [$BOOTSTRAP_PATH]
+
+USAGE
+exit 0
+}
+
+
+create_header(){
+	echo -n "Creation du fichier ${HEADER} dans ${WWW} ... "
+	sleep 2
+	cat > $WWW/$HEADER <<HEADER
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Web bootstrap</title>
+
+    <link href="${BOOTSTRAP_PATH}/css/bootstrap.min.css" rel="stylesheet" type = "text/css" >
+
+    <link href="${CSS_PATH}/styles.css" rel="stylesheet" type = "text/css">
+  </head>
+  <body>
+HEADER
+if test $? = 0
+then
+	echo "OK !"
+fi
+}
+
+create_index(){
+	echo -n "Creation du fichier index.php dans ${WWW} ... "
+	sleep 2
+	cat > $WWW/index.php <<INDEX
+<?php
+	include('$HEADER');
+?>
+<div class = "container">
+<p class = "alert alert-success">Tout marche !!!</p>
+<p><a href = "#" data-toggle = "tooltip" title = "tooltip example">tooltip</a></p>
+<br />
+<p><i class = "glyphicon glyphicon-home"></i> glyphicon example</p>
+<br />
+<br />
+<div>
+navbar example
+<nav class="collapse navbar-collapse" role="navigation" id = "navbar">
+	<ul class="nav navbar-nav">
+		<li><a href="#"><i class = "glyphicon glyphicon-home"></i> Accueil</a></li>
+		<li><a href="#"><i class = "glyphicon glyphicon-envelope"></i> Contact</a></li>
+		<li class="dropdown">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class = "glyphicon glyphicon-"></i> Menu <b class="caret"></b></a>
+	        <ul class="dropdown-menu">
+	          <li><a href="#">Sous menu 1</a></li>
+	          <li><a href="#">Sous menu 2</a></li>
+	        </ul>
+	      </li>
+	</ul>
+</nav>
+</div>
+<br />
+<br />
+<div>
+	table example
+	<table class = "table table-striped table-condensed table-bordered table-responsive">
+		<tr>
+			<th>Header 1</th>
+			<th>Header 2</th>
+			<th>Header 3</th>
+		</tr>
+		<tr>
+			<td>Line 1 col 1</td>
+			<td>Line 1 col 2</td>
+			<td>Line 1 col 3</td>
+		</tr>
+		<tr>
+			<td>Line 2 col 1</td>
+			<td>Line 2 col 2</td>
+			<td>Line 2 col 3</td>
+		</tr>
+	</table>
+</div>
+<br />
+<br />
+<div>
+	<p>Bouton example</p>
+	<a class = "btn btn-primary">Bouton primary</a>
+	<a class = "btn btn-danger">Bouton danger</a>
+	<a class = "btn btn-info">Bouton info</a>
+	<a class = "btn btn-warning">Bouton warning</a>
+	<a class = "btn btn-success">Bouton success</a>
+</div>
+<br />
+<p><a class = "btn btn-primary" href = "$APP_WEB_SITE">visitez le site web de l'application $APP_WEB_SITE</a></p>
+</div> <!-- ./container -->
+<?php
+	include('$FOOTER');
+?>
+INDEX
+if test $? = 0
+then
+	echo "OK !"
+fi
+}
+
+create_footer(){
+	echo -n "Creation du fichier ${FOOTER} dans ${WWW} ... "
+	sleep 2
+	cat > $WWW/$FOOTER <<FOOTER
+	<footer>
+		<p class = "text-center">Build by $APP_AUTHOR on $APP_BUILD_DATE</p>
+	</footer>
+    <script src="${JS_PATH}/jquery.min.js"></script>
+
+	<script src="${BOOTSTRAP_PATH}/js/bootstrap.min.js"></script>
+
+    <script src="${JS_PATH}/script.js"></script>
+  </body>
+</html>
+FOOTER
+if test $? = 0
+then
+	echo "OK !"
+fi
+}
+
+create_js(){
+	echo -n "Creation du fichier script.js dans ${WWW}/${JS_PATH} ..."
+	sleep 3
+	cat > $WWW/${JS_PATH}/script.js <<JS
+	\$(document).ready(function(){
+		\$(".tooltip-input").tooltip({
+			html:true,
+			placement : "right auto",
+			container : "body",
+			trigger : "focus",
+			animation : false
+		});
+
+
+		\$('[data-toggle="tooltip"]').tooltip({
+			html:true,
+			placement : "auto right",
+			container : "body",
+			trigger : "hover focus",
+			animation : false
+		});
+	});
+JS
+if test $? = 0
+then
+	echo "OK !"
+fi
+}
+
+
+create_css(){
+	echo -n "Creation du fichier styles.css dans ${WWW}/${CSS_PATH} ..."
+	sleep 3
+	cat > $WWW/${CSS_PATH}/styles.css <<CSS
+	.error{
+		color : #f00;
+		text-align : center;
+	}
+
+	.alert{
+		text-align : center;
+		width : 60%;
+		margin : 0.4% auto;
+	}
+
+
+	th, td, tr{
+		text-align : center;
+	}
+
+
+	.carousel-inner{
+		width:100%;
+		height:400px;
+
+	}
+
+	.carousel-page{
+		width:100%;
+		height:400px;
+		background-color:#5f666d;
+		color:white;
+	}
+
+	.carousel-page img{
+		width : 100%;
+	}
+
+	.page-header{
+		text-align : center;
+	}
+CSS
+if test $? = 0
+then
+	echo "OK !"
+fi
+}
+
+
+
+
+for i in $@
+do
+	if test -n $1 && egrep "^(-|--)[a-z-]+$" >/dev/null <<PAT
+$1
+PAT
+	then
+		case $1 in
+		-h|--help)
+		usage
+		shift
+		;;
+		-v|--version)
+cat<<VERSION
+$APP_NAME $APP_VERSION
+Auteur : $APP_AUTHOR
+Date : $APP_BUILD_DATE
+VERSION
+		exit 0
+		shift
+		;;
+		-f|--file)
+			if test -z $2 || test ! -f $2
+			then
+				echo "Veuillez specifier le fichier compressé de bootstrap"
+				exit 1
+			else
+				FILE=$2
+			fi
+		shift 2
+		;;
+		-d|--dir)
+			if test ! -z $2
+			then
+				test ! -d $2 && mkdir $2
+				WWW=$2
+			else
+				echo "Veuillez specifier le repertoire de destination"
+				exit 1
+			fi
+		shift 2
+		;;
+		--header)
+			HEADER=$2
+		shift 2
+		;;
+		--footer)
+			FOOTER=$2
+		shift 2
+		;;
+		--css-path)
+			CSS_PATH=$2
+		shift 2
+		;;
+		--js-path)
+			JS_PATH=$2
+		shift 2
+		;;
+		--bootstrap-path)
+			BOOTSTRAP_PATH=$2
+		shift 2
+		;;
+		*)
+		echo -e "Option invalide $1\n Tapez ${APP_BIN} -h pour afficher de l'aide"
+		exit 1
+		;;
+		esac
+	fi
+done
+
+if test -z $FILE || test ! -f $FILE
+then
+	echo "Veuillez specifier le fichier compressé de bootstrap"
+	exit 1
+fi
+
+test ! -d $WWW && mkdir $WWW
+test ! -d $TEMPDIR && mkdir $TEMPDIR
+
+cat <<EOL
+Fichier compressé de bootstrap : $FILE
+Répertoire de destination : $WWW
+Fichier d'entete : $HEADER
+Fichier de pied de page : $FOOTER
+Chemin des fichiers CSS : $CSS_PATH
+Chemin des fichiers javascripts : $JS_PATH
+Chemin des fichiers bootstrap : $BOOTSTRAP_PATH
+Hostname : `hostname`
+EOL
+sleep 4
+
+mkdir -p $WWW/${BOOTSTRAP_PATH}
+mkdir -p $WWW/${JS_PATH}
+mkdir -p $WWW/${CSS_PATH}
+
+echo -n "Decompression de $FILE dans \"$TEMPDIR\" ..."
+unzip -q $FILE -d $TEMPDIR 2> /dev/null && echo " OK !"
+
+echo -n "Copie des fichiers necessaires dans le dossier \"$WWW\" ..."
+cp -ra $TEMPDIR/*/dist/* $WWW/${BOOTSTRAP_PATH} 2> /dev/null && \
+cp  $TEMPDIR/*/js/tests/vendor/jquery.min.js $WWW/${JS_PATH} 2> /dev/null \
+&& echo " OK !"
+
+#header
+create_header
+
+#index
+create_index
+
+#footer
+create_footer
+
+#style css
+create_css
+
+
+#js
+create_js
+
+echo -n "Suppression du repertoire temporaire \"$TEMPDIR\" ..."
+sleep 3
+rm -rf $TEMPDIR && echo " OK !"
+
+test $? = 0 && echo "Fichiers générés dans le dossier \"$WWW\""
